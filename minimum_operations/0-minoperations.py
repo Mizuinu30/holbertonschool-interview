@@ -3,7 +3,8 @@
 
 
 def minOperations(n):
-    """ Function to calculate the minimum number of operations to reach a number """
+    """ Function to calculate the minimum
+    number of operations to reach a number """
     if n <= 1:
         return 0
     operations = 0
