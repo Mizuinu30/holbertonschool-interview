@@ -8,12 +8,15 @@ typedef struct listint_s
 } listint_t;
 
 int check_cycle(listint_t *list)
-{
+{     
+    listint_t *slow;
+    listint_t *fast;
+    
     if (list == NULL || list->next == NULL)
         return 0;
 
-    listint_t *slow = list;
-    listint_t *fast = list->next;
+    slow = list;
+    fast = list->next;
 
     while (fast != NULL && fast->next != NULL)
     {
@@ -27,7 +30,7 @@ int check_cycle(listint_t *list)
     return 0;
 }
 
-// Function to create a new node
+/* Function to create a new node*/
 listint_t *create_node(int value)
 {
     listint_t *new_node = (listint_t *)malloc(sizeof(listint_t));
