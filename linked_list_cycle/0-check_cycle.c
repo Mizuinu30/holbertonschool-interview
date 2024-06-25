@@ -11,7 +11,7 @@ int check_cycle(listint_t *list)
 {     
     listint_t *slow;
     listint_t *fast;
-    
+
     if (list == NULL || list->next == NULL)
         return 0;
 
@@ -44,7 +44,7 @@ listint_t *create_node(int value)
     return new_node;
 }
 
-// Function to free the list
+/*Function to free the list*/
 void free_list(listint_t *head)
 {
     listint_t *temp;
