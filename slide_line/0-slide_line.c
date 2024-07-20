@@ -1,48 +1,108 @@
 #include "slide_line.h"
 
+/**
+ * slide_line - slides an array to left or right to sum numbers
+ *
+ * @line: line of numbers to be checked
+ * @size: size of array
+ * @direction: left or right
+ * Return: 1 if is possible or 0 if it's not possible
+ */
+
 int slide_line(int *line, size_t size, int direction)
 {
-	int *place_here = NULL;
-	int *left = NULL;
-	int *right = NULL;
+	if (direction == 2)
+		return (to_left(line, size));
+	if (direction == 1)
+		return (to_right(line, size));
+	else
+		return (0);
+}
 
-	if (direction == SLIDE_LEFT)
+/**
+ * to_left - slide to the left to sum
+ *
+ * @line: line of numbers to be checked
+ * @size: size of array
+ * Return: 1 on success
+ */
+
+int to_left(int *line, size_t size)
+{
+	int cur = 0, nxt = 0;
+	size_t i, index = 0;
+
+	for (i = 0; i < size; i++)
 	{
-		place_here = line;
-		left = place_here;
-
-		while (left < line + (size - 1))
+		if (line[i] != 0 && cur == 0)
+			cur = line[i];
+		else if (cur != 0 && line[i] != 0)
+			nxt = line[i];
+		if (cur != 0 && nxt != 0)
 		{
-			while (*left == 0 && left < line + (size - 1))
+			if (cur == nxt)
 			{
-				left++;
+				line[index++] = cur + nxt;
+				cur = 0;
+				nxt = 0;
 			}
-			right = left + 1;
-			while (right < line + (size))
+			else
 			{
-				if (*right == *left)
-				{
-					*place_here = *left * 2;
-					if (place_here != left)
-					{
-						*left = 0;
-					}
-					*right = 0;
-					place_here++;
-					break;
-				}
-				else
-				{
-					right++;
-				}
+				line[index++] = cur;
+				cur = nxt;
+				nxt = 0;
+				if (i == size - 1)
+					line[index++] = cur;
 			}
-			left++;
 		}
-		if (*(line + size - 1) && !*place_here)
-		{
-			*place_here = *(line + size - 1);
-			*(line + size - 1) = 0;
-		}
+		if (cur != nxt && i == size - 1)
+			line[index++] = cur;
 	}
+	for (i = index; i < size; i++)
+		line[i] = 0;
+	return (1);
+}
+
+/**
+ * to_right - slides an array to sum numbers
+ *
+ * @line: line of numbers to be checked
+ * @size: size of array
+ * Return: 1 on success
+ */
+
+int to_right(int *line, size_t size)
+{
+	int cur = 0, previous = 0;
+	size_t i, index = size - 1;
+
+	for (i = size - 1; i < size; i--)
+	{
+		if (line[i] != 0 && cur == 0)
+			cur = line[i];
+		else if (cur != 0 && line[i] != 0)
+			previous = line[i];
+		if (cur != 0 && previous != 0)
+		{
+			if (cur == previous)
+			{
+				line[index--] = cur + previous;
+				cur = 0;
+				previous = 0;
+			}
+			else
+			{
+				line[index--] = cur;
+				cur = previous;
+				previous = 0;
+				if (i == 0)
+					line[index--] = cur;
+			}
+		}
+		else if (cur != previous && i == 0)
+			line[index--] = cur;
+	}
+	for (i = 0; i < index + 1; i++)
+		line[i] = 0;
 	return (1);
 }
