@@ -1,36 +1,33 @@
 #include "menger.h"
-#include <stdio.h>
-#include <math.h>
-
-/* Helper function to determine if a specific cell should be filled or empty */
-int isCellFilled(int x, int y)
-{
-    while (x > 0 || y > 0)
-    {
-        if (x % 3 == 1 && y % 3 == 1)
-        {
-            return 0; /* center cell should be empty */
-        }
-        x /= 3;
-        y /= 3;
-    }
-    return 1; /* filled cell */
-}
+/**
+ * menger - function that draws a 2D Menger Sponge
+ * @level: level of the menger sponge to draw
+ */
 
 void menger(int level)
 {
-    int size = pow(3, level);
-    int i, j;
+	int n, m, j, x, y;
+	char s;
 
-    for (i = 0; i < size; i++)
-    {
-        for (j = 0; j < size; j++)
-        {
-            if (isCellFilled(i, j))
-                printf("#");
-            else
-                printf(" ");
-        }
-        printf("\n");
-    }
+	m = pow(3, level);
+	for (n = 0; n < m; n++)
+	{
+		for (j = 0; j < m;)
+		{
+			s = '#';
+			x = n;
+			y = j++;
+			while (x > 0 || y > 0)
+			{
+				if (x % 3 == 1 && y % 3 == 1)
+				{
+					s = ' ';
+				}
+				x /= 3;
+				y /= 3;
+			}
+			printf("%c", s);
+		}
+		printf("\n");
+	}
 }
