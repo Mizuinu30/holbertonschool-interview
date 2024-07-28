@@ -1,5 +1,6 @@
 #include "menger.h"
 #include <stdio.h>
+#include <math.h>
 
 // Helper function to determine if a specific cell should be filled or empty
 int isCellFilled(int x, int y)
