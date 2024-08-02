@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """ Module that contains a function to solve the N Queens problem """
 import sys
 
