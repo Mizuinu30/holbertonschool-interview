@@ -1,54 +1,59 @@
 #!/usr/bin/python3
-""" Module that contains a function to solve the N Queens problem """
+"""
+Implementing N queens problem
+"""
 import sys
 
-def print_solution(board):
-    """Print the board configuration as a list of positions."""
-    solution = []
-    for i in range(len(board)):
-        solution.append([i, board[i]])
-    print(solution)
 
-def is_safe(board, row, col):
-    """Check if a queen can be placed on the board at (row, col)."""
+def recurse(board, row):
+    """
+    utility function that positions the queens on the board
+    and uses recursion ("backtracking") to ensure that all the positions
+    taken are valid positions (i.e. non-attacking positions)
+    """
+
+    N = len(board)
+
+    # Exit rercusion condition
+    if row == N:
+        print(board)
+    else:
+        for col in range(N):
+            board[row][1] = col
+            if valid_position(board, row):
+                recurse(board, row + 1)
+
+
+def valid_position(board, row):
+    """
+    function that ensures that a given position on the board is
+    a valid position (i.e. non-attacking position)
+    """
+
     for i in range(row):
-        if board[i] == col or board[i] - i == col - row or board[i] + i == col + row:
+        if board[row][1] == board[i][1]:
+            return False
+        # Clear the diagonales
+        if abs(board[row][1] - board[i][1]) == row - i:
             return False
     return True
 
-def solve_nqueens_util(board, row, n):
-    """Use backtracking to find all solutions for placing queens."""
-    if row == n:
-        print_solution(board)
-        return
-    for col in range(n):
-        if is_safe(board, row, col):
-            board[row] = col
-            solve_nqueens_util(board, row + 1, n)
-            board[row] = -1
 
-def solve_nqueens(n):
-    """Initialize the board and solve the N Queens problem."""
-    board = [-1] * n
-    solve_nqueens_util(board, 0, n)
+if __name__ == '__main__':
 
-def main():
-    """Main function to handle input and validate arguments."""
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
-        sys.exit(1)
+        exit(1)
 
     try:
-        n = int(sys.argv[1])
-    except ValueError:
+        N = int(sys.argv[1])
+    except Exception:
         print("N must be a number")
-        sys.exit(1)
+        exit(1)
 
-    if n < 4:
+    if N < 4:
         print("N must be at least 4")
-        sys.exit(1)
+        exit(1)
 
-    solve_nqueens(n)
-
-if __name__ == "__main__":
-    main()
+    board = [[row, 0] for row in range(N)]
+    recurse(board, 0)
