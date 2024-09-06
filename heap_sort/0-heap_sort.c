@@ -1,5 +1,5 @@
 #include "sort.h"
-#include <stddef.h>  // Include this header for size_t
+#include <stddef.h> /* Include this header for size_t */
 
 void heap_sort(int *array, size_t size);
 void heapify(int *array, size_t size);
