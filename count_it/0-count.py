@@ -8,52 +8,42 @@ Javascript should count as javascript, but java should not).
 """
 
 import requests
-import sys
 
 
-def count_words(subreddit, word_list, kw_cont={}, next_pg=None, reap_kw={}):
-    """all hot posts by keyword"""
-    headers = {"User-Agent": "nildiert"}
+def count_words(subreddit, word_list, kw_cont=None, after=None):
+    if kw_cont is None:
+        kw_cont = {}
 
-    if next_pg:
-        subr = requests.get('https://reddit.com/r/' + subreddit +
-                            '/hot.json?after=' + next_pg, headers=headers)
-    else:
-        subr = requests.get('https://reddit.com/r/' + subreddit +
-                            '/hot.json', headers=headers)
+    headers = {"User-Agent": "Mozilla/5.0"}
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    params = {"limit": 100, "after": after}
 
-    if subr.status_code == 404:
+    response = requests.get(url, headers=headers,
+                            params=params, allow_redirects=False)
+
+    if response.status_code != 200:
         return
 
-    if kw_cont == {}:
-        for word in word_list:
-            kw_cont[word] = 0
-            reap_kw[word] = word_list.count(word)
+    data = response.json().get("data", {})
+    posts = data.get("children", [])
 
-    subr_dict = subr.json()
-    subr_data = subr_dict['data']
-    next_pg = subr_data['after']
-    subr_posts = subr_data['children']
+    for post in posts:
+        title = post["data"]["title"].lower().split()
+        for word in title:
+            word = word.strip(".,!?_")
+            if word in word_list:
+                if word in kw_cont:
+                    kw_cont[word] += 1
+                else:
+                    kw_cont[word] = 1
 
-    for post in subr_posts:
-        post_data = post['data']
-        post_title = post_data['title']
-        title_words = post_title.split()
-        for w in title_words:
-            for key in kw_cont:
-                if w.lower() == key.lower():
-                    kw_cont[key] += 1
-
-    if next_pg:
-        count_words(subreddit, word_list, kw_cont, next_pg, reap_kw)
-
+    after = data.get("after")
+    if after:
+        count_words(subreddit, word_list, kw_cont, after)
     else:
-        for key, val in reap_kw.items():
-            if val > 1:
-                kw_cont[key] *= val
+        sorted_kw = sorted(kw_cont.items(), key=lambda kv: (-kv[1], kv[0]))
+        for word, count in sorted_kw:
+            print(f"{word}: {count}")
 
-        sorted_abc = sorted(kw_cont.items(), key=lambda x: x[0])
-        sorted_res = sorted(sorted_abc, key=lambda x: (-x[1], x[0]))
-        for res in sorted_res:
-            if res[1] > 0:
-                print('{}: {}'.format(res[0], res[1]))
+# Example usage:
+# count_words('learnpython', ['python', 'java', 'javascript'])
