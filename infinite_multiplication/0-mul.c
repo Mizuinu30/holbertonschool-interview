@@ -200,46 +200,48 @@ char *create_final(unsigned int size, char **calculation)
  *
  * Return: final product without leading 0s
  */
-
 char *final_realloc(char *final, char **calculation)
 {
-	unsigned int i = 0, j = 0, leading = 0, new_size = 1;
-	char *final_realloc = NULL;
+    unsigned int i = 0, j = 0, leading = 0, new_size = 1;
+    char *final_realloc = NULL;
 
-	for (i = 0; final[i]; i++)
-	{
-		if (leading)
-			new_size++;
-		else if (final[i] != '0')
-			leading = 1;
-	}
-	final_realloc = malloc(sizeof(char) * (new_size + 1));
-	if (final_realloc == NULL)
-	{
-		for (i = 0; calculation[i]; i++)
-			free(calculation[i]);
-		free(calculation);
-		free(final);
-		error();
-	}
-	final_realloc[new_size] = '\0';
-	leading = 0;
-	for (i = 0; final[i]; i++)
-	{
-		if (leading)
-		{
-			final_realloc[j] = final[i];
-			j++;
-		}
-		else if (final[i] != '0')
-		{
-			leading = 1;
-			final_realloc[j] = final[i];
-			j++;
-		}
-		else if (new_size == 1)
-			final_realloc[j] = '0';
-	}
-	free(final);
-	return (final_realloc);
+    for (i = 0; final[i]; i++)
+    {
+        if (leading)
+            new_size++;
+        else if (final[i] != '0')
+            leading = 1;
+    }
+
+    final_realloc = malloc(sizeof(char) * (new_size + 1));
+    if (final_realloc == NULL)
+    {
+        for (i = 0; calculation[i]; i++)
+            free(calculation[i]);
+        free(calculation);
+        free(final);
+        error();  // Exits the program
+    }
+
+    final_realloc[new_size] = '\0';
+    leading = 0;
+    for (i = 0; final[i]; i++)
+    {
+        if (leading)
+        {
+            final_realloc[j] = final[i];
+            j++;
+        }
+        else if (final[i] != '0')
+        {
+            leading = 1;
+            final_realloc[j] = final[i];
+            j++;
+        }
+        else if (new_size == 1)
+            final_realloc[j] = '0';
+    }
+
+    free(final);
+    return (final_realloc);
 }
